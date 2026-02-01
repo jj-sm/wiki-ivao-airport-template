@@ -1,7 +1,7 @@
 import argparse
 import os
+import time
 import matplotlib
-# Forces non-interactive background rendering
 matplotlib.use('Agg') 
 
 import matplotlib.pyplot as plt
@@ -38,12 +38,12 @@ def save_airport_map(iata, folder, ext):
         
         ax.spines["geo"].set_visible(False)
         
-        # Add Label
-        text = AnchoredText(
-            iata, loc=1, frameon=False,
-            prop={"size": 30, "fontweight": "bold"}
-        )
-        ax.add_artist(text)
+        # # Add Label
+        # text = AnchoredText(
+        #     iata, loc=1, frameon=False,
+        #     prop={"size": 30, "fontweight": "bold"}
+        # )
+        # ax.add_artist(text)
 
         # 4. Save
         filename = os.path.join(folder, f"{iata.lower()}.{ext}")
@@ -66,11 +66,17 @@ if __name__ == "__main__":
     # --format svg
     parser.add_argument("--format", choices=["png", "svg", "pdf"], default="png", help="Output format")
 
+    # --sleep 10
+    parser.add_argument("--sleep", type=int, default=10, help="Sleep time between requests (seconds)")
+
     args = parser.parse_args()
 
     # Create directory if it doesn't exist
     if not os.path.exists(args.save):
         os.makedirs(args.save)
 
-    for code in args.airports:
+    for i, code in enumerate(args.airports):
         save_airport_map(code.upper(), args.save, args.format)
+        if i < len(args.airports) - 1:
+            print(f"Waiting {args.sleep} seconds...")
+            time.sleep(args.sleep)
