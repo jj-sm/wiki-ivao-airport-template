@@ -75,17 +75,18 @@ def request_fra_info(position_id: int) -> list:
     return sorted(list(available_fras))
 
 
-def make_markdown_table(data_dict: list) -> None:
+def make_markdown_table(data_dict: list, icao: str) -> None:
     headers = ["Indicativo", "Frecuencia", "FRA", "Observaciones"]
     out_file_lines = []
     out_file_lines.append("| " + " | ".join(headers) + " |")
     out_file_lines.append("|" + "|".join([":---:"] * len(headers)) + "|")
 
     for entry in data_dict:
-        indicativo_str = f"`{entry['ivao_callsign']}` <br> _{entry['atc_callsign']}_"
+        ivao_cs = entry['ivao_callsign']
+        indicativo_str = f"`{ivao_cs}` <br> <em>{entry['atc_callsign']}</em>"
         frecuencia_str = f"{entry['frequency']:.3f} MHz"
         fra_str = "<br>".join(
-            f"[![{indicativo_str}]({RANK_MAP.get(fra, fra)})](https://atc.ivao.aero)"
+            f"[![{indicativo_str}]({RANK_MAP.get(fra, fra)})](https://atc.ivao.aero/fras?filter={ivao_cs})"
             for fra in entry['available_fras']
         )
         observations_str = ""
@@ -93,7 +94,7 @@ def make_markdown_table(data_dict: list) -> None:
             f"| {indicativo_str} | {frecuencia_str} | {fra_str} | {observations_str} |"
         )
     out_md = "\n".join(out_file_lines)
-    output_filename = "atc_positions.md"
+    output_filename = f"{icao}_atc_positions.md"
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write(out_md)
     print(f"Markdown table saved to {output_filename}")
@@ -168,7 +169,7 @@ def main():
 
             try:
                 data_md = order_data_by_position(out_data)
-                make_markdown_table(data_md)
+                make_markdown_table(data_md, ICAO)
             except Exception as e:
                 print(f"Error generating markdown table: {e}")
 
