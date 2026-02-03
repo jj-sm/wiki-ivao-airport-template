@@ -66,7 +66,7 @@ def parse_file(filepath):
 
 def write_svg(filename, polys, min_x, min_y, scale, view_size):
     # Vibrant colors for airspaces
-    colors = ['#00F2FF', '#00FF41', '#FFFB00', '#FF007A', '#7A00FF', '#007AFF']
+    colors = ['#845EC2', '#D65DB1', '#FF6F91', '#FF9671', '#FFC75F', '#F9F871', '#008F7A', '#00C9A7', '#0081CF', '#845EC2', '#D65DB1', '#FF6F91', '#FF9671', '#4FFBDF']
     margin = 50
     
     header = (
